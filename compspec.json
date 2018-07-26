@@ -1,10 +1,10 @@
 {
   "meta": {
-    "name": "Group ICA",
+    "name": "decentralized regression normal equation demo",
     "id": "gica",
     "version": "v1.0.0",
-    "repository": "https:\/\/github.com\/MRN-Code\/coinstac_gica",
-    "description": "Group ICA"
+    "repository": "https:\/\/github.com\/MRN-Code\/coinstac_drne_fsl",
+    "description": "Decentralized Regression with Normal Equation on FreeSurfer Data"
   },
   "computation": {
     "type": "docker",
@@ -22,11 +22,27 @@
       ]
     },
     "input": {
-      "data_file": {
+      "lambda":
+      {
+        "defaultValue": 0,
+        "label": "Lambda",
+        "max": 1,
+        "min": 0,
+        "step": 0.05,
+        "type": "number",
+        "source": "owner"
+      },
+      "covariates":
+      {
+        "label": "Covariates",
+        "type": "array",
+        "items": ["boolean", "number"]
+      },
+      "data": {
         "label": "Data",
-        "type": "str",
-        "items": [""],
-        "extensions": [["csv", "txt", "mat"]]
+        "type": "array",
+        "items": ["FreeSurfer"],
+        "extensions": [["csv", "txt"]]
       }
     },
     "output": {
