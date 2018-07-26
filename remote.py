@@ -15,7 +15,8 @@ DEFAULT_data_file = 'data.txt'
 DEFAULT_num_components = 20
 
 
-def remote_init_env(data_file=DEFAULT_data_file, num_components=DEFAULT_num_components,
+def remote_init_env(data_file=DEFAULT_data_file,
+                    num_components=DEFAULT_num_components,
                     config_file=CONFIG_FILE):
     """
         # Description:
@@ -45,18 +46,17 @@ def remote_init_env(data_file=DEFAULT_data_file, num_components=DEFAULT_num_comp
         with open(config_path, 'w') as file:
             config.write(file)
     # output
-    computation_output = dict(output=
-                              dict(
-                                  config_file=config_file,
-                                  data_file=data_file,
-                                  computation_phase="remote_init_env"
-                                  ),
-                              success=True,
-                              )
+    computation_output = dict(
+        output=dict(
+            config_file=config_file,
+            data_file=os.path.join(args["state"]["baseDirectory"], data_file),
+            computation_phase="remote_init_env"),
+        success=True, )
     return json.dumps(computation_output)
 
 
-def remote_ica(data_file=DEFAULT_data_file, num_components=DEFAULT_num_components):
+def remote_ica(data_file=DEFAULT_data_file,
+               num_components=DEFAULT_num_components):
     """
         # Description:
             Initialize the remote environment, creating the config file.
@@ -80,16 +80,10 @@ def remote_ica(data_file=DEFAULT_data_file, num_components=DEFAULT_num_component
 
     logging.info('REMOTE: Running ICA')
     X = np.loadtxt(data_file)
-    A,S,W = ica1(X, num_components)
-    computation_output = dict(output=
-                              dict(
-                                  A=A,
-                                  S=S,
-                                  W=W,
-                                  computation_phase="remote_ica"
-                                  ),
-                              success=True,
-                            )
+    A, S, W = ica1(X, num_components)
+    computation_output = dict(
+        output=dict(A=A, S=S, W=W, computation_phase="remote_ica"),
+        success=True, )
     return json.dumps(computation_output)
 
 
@@ -104,4 +98,3 @@ if __name__ == '__main__':
         sys.stdout.write(computation_output)
     else:
         raise ValueError('Oops')
-
