@@ -8,6 +8,7 @@ import json
 import logging
 import configparser
 import numpy as np
+from ancillary import list_recursive
 from .ica.ica import ica1
 
 CONFIG_FILE = 'config.cfg'
