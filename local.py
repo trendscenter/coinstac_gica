@@ -3,7 +3,6 @@ import sys
 import logging
 import numpy as np
 import configparser
-import local_computations as local
 
 
 def local_noop(**kwargs):
