@@ -40,7 +40,7 @@ def remote_init_env(args):
         output=dict(
             data_file=os.path.join(args["state"]["baseDirectory"], 'data.txt'),
             computation_phase="remote_init_env"),)
-    return json.dumps(computation_output)
+    return computation_output
 
 
 def remote_ica(args, prev_func_output):
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     if 'local_noop' in phase_key:  # FIRST PHASE
         computation_output = remote_init_env(parsed_args)
-        computation_output = remote_ica(parsed_args, json.loads(computation_output))
+        computation_output = remote_ica(parsed_args, computation_output)
         sys.stdout.write(computation_output)
     else:
         raise ValueError('Oops')
