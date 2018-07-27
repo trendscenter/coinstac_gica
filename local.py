@@ -1,10 +1,7 @@
-import os
-import sys
-import logging
-import numpy as np
-import configparser
 import json
+import sys
 from ancillary import list_recursive
+
 
 def local_noop(**kwargs):
     """
@@ -25,8 +22,8 @@ def local_noop(**kwargs):
         output=dict(
             computation_phase="local_noop"
             ),
-        success=True
     )
+    
     return json.dumps(computation_output)
 
 
