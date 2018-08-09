@@ -24,7 +24,7 @@ To run the DEMO, make sure you have COINSTAC-SIMULATOR installed:
 
 Then, run the demo bash script:
 
-  git clone https://github.com/MRN-Code/coinstac_gica.git;
-  cd coinstac_gica;
-  bash run_demo.sh;
+  git clone https://github.com/MRN-Code/coinstac_gica.git;  
+  cd coinstac_gica;  
+  bash run_demo.sh;  
    
