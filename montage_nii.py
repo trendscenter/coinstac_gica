@@ -128,11 +128,11 @@ def save_montage(NIFTI, ANAT, ONAME, SGN):
 
 if __name__ == '__main__':
    if len(sys.argv) != 5:
-      print 'usage : montage_nii.py <nifti> <anat> <outname> <sign>\n' +\
+      print('usage : montage_nii.py <nifti> <anat> <outname> <sign>\n' +\
          'You must specify: \n' +\
          '    - <nifti> a 4D nifti to convert to images \n' +\
          '    - <anat> anatomical image to use as underlay \n' +\
          '    - <outname> output image filename (out.png)\n' +\
-         '    - <sign> pos (1), neg (-1), or both (0)'
+         '    - <sign> pos (1), neg (-1), or both (0)')
       sys.exit(1)
    save_montage(sys.argv[1],sys.argv[2],sys.argv[3],int(sys.argv[4]))
