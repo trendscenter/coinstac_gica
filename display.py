@@ -14,10 +14,7 @@ DEFAULT_signal = 0
 
 def save_to_image(data,template_file=DEFAULT_template, output_file=DEFAULT_output):
     template = load_image(template_file) 
-    print(data.shape)
-    print(template.get_data().shape)
-    data = sio.loadmat('res.mat')['res']
-    newimg = Image(data,vox2mni(np.eye(5)))
+    newimg = Image(data,vox2mni(template.affine))
     save_image(newimg, output_file)
     return output_file
 
