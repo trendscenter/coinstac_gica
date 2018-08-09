@@ -1,7 +1,6 @@
-# The module was tested in python versions 2.7.12 and 3.5.2
-# Packages
-# matplotlib>=1.5.3
-numpy>=1.11.1
-scipy>=0.18.1
-imageio==2.2.0
-scikit_learn>=0.19.1
+numpy==1.14.5
+scipy==1.1.0
+matplotlib==2.2.2
+nipy==0.4.2
+setuptools==40.0.0
+theano==1.0.2
