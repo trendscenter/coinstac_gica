@@ -27,5 +27,9 @@ Then, run the demo bash script:
 
   .. highlight:: bash
   git clone https://github.com/MRN-Code/coinstac_gica.git;  
+
   cd coinstac_gica;  
+
   bash run_demo.sh;  
+
+This code requires a matlab installation to run.
