@@ -9,7 +9,7 @@ import numpy as np
 from ancillary import list_recursive
 from ica.ica import ica1
 import scipy.io as sio
-# from display import montage_data, fill_mask
+from display import montage_data, fill_mask
 # import nibabel as nib
 
 #CONFIG_FILE = 'config.cfg'
@@ -70,14 +70,11 @@ def remote_ica(args, prev_func_output):
     X = np.loadtxt(prev_func_output["output"]["data_file"])
     A, S, W = ica1(X, DEFAULT_num_components)
     outdir = args["state"]["outputDirectory"]
-    sio.savemat(os.path.join(outdir,'S.mat'), {'S':S})
-    '''
     indir = args["state"]["baseDirectory"]
     mask = sio.loadmat(os.path.join(indir,'mask.mat'))['mask']
     Sr = fill_mask(S,mask)
-    Sr = np.reshape(Sr.T, (53, 63, 46, 100))
+    Sr = np.reshape(Sr.T, (53, 63, 46, 100),order="F")
     montage_data(Sr, outdir=outdir, indir=indir)
-    '''
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'A.txt'), A)
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'S.txt'), S)
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'W.txt'), W)

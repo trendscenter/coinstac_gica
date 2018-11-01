@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import sys
+import matplotlib
+matplotlib.use('Agg')
 
 from scipy import reshape, zeros, where, std, argmax, sqrt, ceil, sign, \
     negative, linspace
@@ -9,7 +11,6 @@ from nipy import save_image, load_image
 from nipy.core.api import xyz_affine
 from nipy.labs.viz import plot_map, coord_transform, mni_sform
 import numpy as np
-import matplotlib
 from pylab import savefig, subplot, \
     subplots_adjust, figure, title, rc, cm, text
 
