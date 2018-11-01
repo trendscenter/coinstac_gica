@@ -1,2 +1,8 @@
-[{"Person_Name": {"value": "Bradley"}},
-{"Person_Name": {"value": "Baker"}}]
+{
+    "num_components": {
+        "value": 20
+    },
+    "data_file": {
+        "value": "data.txt"
+    }
+}
