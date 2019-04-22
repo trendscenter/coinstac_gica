@@ -17,7 +17,7 @@ DEFAULT_data_file = 'data.txt'
 DEFAULT_num_components = 100
 
 
-def remote_init_env(args):
+def gica_remote_init_env(args):
     """
         # Description:
             Initialize the remote environment, creating the config file.
@@ -46,7 +46,7 @@ def remote_init_env(args):
     return computation_output
 
 
-def remote_ica(args, prev_func_output):
+def gica_remote_ica(args, prev_func_output):
     """
         # Description:
             Initialize the remote environment, creating the config file.
@@ -71,16 +71,16 @@ def remote_ica(args, prev_func_output):
     A, S, W = ica1(X, DEFAULT_num_components)
     outdir = args["state"]["outputDirectory"]
     indir = args["state"]["baseDirectory"]
-    mask = sio.loadmat(os.path.join(indir,'mask.mat'))['mask']
-    Sr = fill_mask(S,mask)
-    Sr = np.reshape(Sr.T, (53, 63, 46, 100),order="F")
+    mask = sio.loadmat(os.path.join(indir, 'mask.mat'))['mask']
+    Sr = fill_mask(S, mask)
+    Sr = np.reshape(Sr.T, (53, 63, 46, 100), order="F")
     montage_data(Sr, outdir=outdir, indir=indir)
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'A.txt'), A)
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'S.txt'), S)
     np.savetxt(os.path.join(args["state"]["outputDirectory"], 'W.txt'), W)
 
     computation_output = dict(
-        output=dict(computation_phase="remote_ica"),
+        output=dict(computation_phase="gica_remote_1"),
         success=True, )
 
     return json.dumps(computation_output)

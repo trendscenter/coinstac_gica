@@ -3,7 +3,7 @@ import sys
 from ancillary import list_recursive
 
 
-def local_noop(**kwargs):
+def gica_local_noop(**kwargs):
     """
         # Description:
             Nooperation
@@ -20,10 +20,10 @@ def local_noop(**kwargs):
     """
     computation_output = dict(
         output=dict(
-            computation_phase="local_noop"
-            ),
+            computation_phase="gica_local_noop"
+        ),
     )
-    
+
     return json.dumps(computation_output)
 
 
