@@ -6,10 +6,10 @@ import os
 import sys
 import json
 import numpy as np
-from ancillary import list_recursive
-from ica.ica import ica1
+from utils import listRecursive
+from .ica.ica import ica1
 import scipy.io as sio
-from display import montage_data, fill_mask
+from .display import montage_data, fill_mask
 # import nibabel as nib
 
 #CONFIG_FILE = 'config.cfg'
@@ -39,10 +39,9 @@ def gica_remote_init_env(args):
             remote_ica
     """
 
-    computation_output = dict(
-        output=dict(
-            data_file=os.path.join(args["state"]["baseDirectory"], 'data.txt'),
-            computation_phase="remote_init_env"),)
+    computation_output = dict(output=dict(
+        data_file=os.path.join(args["state"]["baseDirectory"], 'data.txt'),
+        computation_phase="remote_init_env"), )
     return computation_output
 
 
@@ -81,7 +80,8 @@ def gica_remote_ica(args, prev_func_output):
 
     computation_output = dict(
         output=dict(computation_phase="gica_remote_1"),
-        success=True, )
+        success=True,
+    )
 
     return json.dumps(computation_output)
 
@@ -89,7 +89,7 @@ def gica_remote_ica(args, prev_func_output):
 if __name__ == '__main__':
 
     parsed_args = json.loads(sys.stdin.read())
-    phase_key = list(list_recursive(parsed_args, 'computation_phase'))
+    phase_key = list(listRecursive(parsed_args, 'computation_phase'))
 
     if 'local_noop' in phase_key:  # FIRST PHASE
         computation_output = remote_init_env(parsed_args)
