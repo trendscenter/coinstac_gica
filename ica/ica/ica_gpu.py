@@ -114,7 +114,7 @@ class ica_gpu(object):
                 
                 # Checking if W blows up
             if isnan or max_w > MAX_W:
-                print("Numeric error! restarting with lower learning rate")
+                #print("Numeric error! restarting with lower learning rate")
                 lrate1 = lrate1 * ANNEAL
                 self.T_weights.set_value(np.eye(NCOMP, dtype=np.float32))
                 self.T_bias.set_value( np.zeros((NCOMP, 1), dtype=np.float32))
@@ -122,13 +122,13 @@ class ica_gpu(object):
 
                 if lrate1 > 1e-6 and \
                    matrix_rank(x_white) < NCOMP:
-                    print("Data 1 is rank defficient"
+                    #print("Data 1 is rank defficient"
                           ". I cannot compute " +
                           str(NCOMP) + " components.")
                     return (0, 1)
 
                 if lrate1 < 1e-6:
-                    print("Weight matrix may"
+                    #print("Weight matrix may"
                           " not be invertible...")
                     return (0, 1)
         
@@ -159,7 +159,7 @@ class ica_gpu(object):
         angle_delta = 0
         step = 1
         if self.verbose:
-            print("Beginning ICA training...")
+            #print("Beginning ICA training...")
         
             
         while step < MAX_STEP and change > W_STOP:
@@ -196,7 +196,7 @@ class ica_gpu(object):
 
                 if (self.verbose and step % 10 == 0) or\
                 (self.verbose and change < W_STOP):
-                    print("Step %d: Lrate %.1e,"
+                    #print("Step %d: Lrate %.1e,"
                           "Wchange %.1e,"
                           "Angle %.2f" % (step, lrate,
                                           change, angle_delta))
@@ -211,16 +211,16 @@ class ica_gpu(object):
         Single modality Independent Component Analysis
         '''
         if self.verbose:
-            print("Whitening data...")
+            #print("Whitening data...")
         x_white, _, dewhite = self.__pca_whiten(x_raw)
         if self.verbose:
-            print("Done.")
-            print("Running INFOMAX-ICA ...")
+            #print("Done.")
+            #print("Running INFOMAX-ICA ...")
         loading, self.sources, self.weights = self.__infomax(x_white)
 
         self.loading = dot(dewhite, loading)
         if self.verbose:
-            print("Done.")
+            #print("Done.")
         return (self.loading, self.sources)
 
 

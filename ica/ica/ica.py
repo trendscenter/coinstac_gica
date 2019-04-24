@@ -28,7 +28,6 @@ def norm(x):
 
 
 class ica:
-
     def __init__(self, n_components=10):
         self.n_comp = n_components
 
@@ -105,12 +104,12 @@ def w_update(weights, x_white, bias1, lrate1):
 
         unmixed = dot(weights, x_white[:, permute1[start:tt2]]) + bias1
         logit = 1 - (2 / (1 + np.exp(-unmixed)))
-        weights = weights + lrate1 * dot(block1 * np.eye(NCOMP) +
-                                         dot(logit, unmixed.T), weights)
+        weights = weights + lrate1 * dot(
+            block1 * np.eye(NCOMP) + dot(logit, unmixed.T), weights)
         bias1 = bias1 + lrate1 * logit.sum(axis=1).reshape(bias1.shape)
         # Checking if W blows up
         if (np.isnan(weights)).any() or np.max(np.abs(weights)) > MAX_W:
-            print("Numeric error! restarting with lower learning rate")
+            #print("Numeric error! restarting with lower learning rate")
             lrate1 = lrate1 * ANNEAL
             weights = np.eye(NCOMP)
             bias1 = np.zeros((NCOMP, 1))
@@ -118,20 +117,21 @@ def w_update(weights, x_white, bias1, lrate1):
 
             if lrate1 > 1e-6 and \
                matrix_rank(x_white) < NCOMP:
-                print("Data 1 is rank defficient"
-                      ". I cannot compute " +
-                      str(NCOMP) + " components.")
+                #print("Data 1 is rank defficient"
+                #     ". I cannot compute " +
+                #     str(NCOMP) + " components.")
                 return (None, None, None, 1)
 
             if lrate1 < 1e-6:
-                print("Weight matrix may"
-                      " not be invertible...")
+                #print("Weight matrix may"
+                #     " not be invertible...")
                 return (None, None, None, 1)
             break
         else:
             error = 0
 
-    return(weights, bias1, lrate1, error)
+    return (weights, bias1, lrate1, error)
+
 
 # infomax1: single modality infomax
 
@@ -157,8 +157,8 @@ def infomax1(x_white, verbose=False):
     bias = np.zeros((NCOMP, 1))
     change = 1
     angle_delta = 0
-    if verbose:
-        print("Beginning ICA training...")
+    #if verbose:
+    #print("Beginning ICA training...")
     step = 1
 
     while step < MAX_STEP and change > W_STOP:
@@ -181,8 +181,8 @@ def infomax1(x_white, verbose=False):
             if step > 2:
                 angle_delta = np.arccos(
                     np.sum(d_weigths * old_d_weights) /
-                    (norm(d_weigths) * norm(old_d_weights) + 1e-8)
-                ) * 180 / np.pi
+                    (norm(d_weigths) * norm(old_d_weights) +
+                     1e-8)) * 180 / np.pi
 
             old_weights = np.copy(weights)
 
@@ -192,16 +192,17 @@ def infomax1(x_white, verbose=False):
             elif step == 1:
                 old_d_weights = np.copy(d_weigths)
 
-            if verbose and change < W_STOP:
-                print("Step %d: Lrate %.1e,"
-                      "Wchange %.1e,"
-                      "Angle %.2f" % (step, lrate,
-                                      change, angle_delta))
+            #if verbose and change < W_STOP:
+            #print("Step %d: Lrate %.1e,"
+            # "Wchange %.1e,"
+            # "Angle %.2f" % (step, lrate,
+            #                 change, angle_delta))
 
         step = step + 1
 
     # A,S,W
     return (inv(weights), dot(weights, x_white), weights)
+
 
 # Single modality ICA
 
@@ -210,14 +211,14 @@ def ica1(x_raw, ncomp, verbose=False):
     '''
     Single modality Independent Component Analysis
     '''
-    if verbose:
-        print("Whitening data...")
+    #if verbose:
+    #print("Whitening data...")
     x_white, _, dewhite = pca_whiten(x_raw, ncomp)
-    if verbose:
-        print('x_white shape: %d, %d' % x_white.shape)
-        print("Done.")
-    if verbose:
-        print("Running INFOMAX-ICA ...")
+    #if verbose:
+    #print('x_white shape: %d, %d' % x_white.shape)
+    #print("Done.")
+    #if verbose:
+    #print("Running INFOMAX-ICA ...")
     mixer, sources, unmixer = infomax1(x_white, verbose)
     mixer = dot(dewhite, mixer)
 
@@ -226,23 +227,23 @@ def ica1(x_raw, ncomp, verbose=False):
     scale = scale.reshape((1, -1))
     mixer = mixer * scale
 
-    if verbose:
-        print("Done.")
+    #if verbose:
+    #print("Done.")
     return (mixer, sources, unmixer)
 
 
 def icax(x_raw, ncomp, verbose=True):
 
-    if verbose:
-        print("Whitening data...")
+    #if verbose:
+    #print("Whitening data...")
     x_white, _, dewhite = pca_whiten(x_raw, ncomp)
 
     mixer_list = []
     sources_list = []
     for it in range(10):
-        if verbose:
-            print('Run number %d' % it)
-            print("Running INFOMAX-ICA ...")
+        #if verbose:
+        #print('Run number %d' % it)
+        #print("Running INFOMAX-ICA ...")
         mixer, sources, unmix = infomax1(x_white, verbose)
         mixer_list.append(mixer)
         sources_list.append(sources)

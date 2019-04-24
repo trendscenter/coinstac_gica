@@ -53,7 +53,7 @@ class test_ica_methods(unittest.TestCase):
         start = time.time()
         x_white, white, dewhite = ica.pca_whiten(self.clean_data, self.NCOMP)
         end = time.time()
-        print('\tPCA whitening time: {:.2f} seconds'.format(end - start))
+        #print('\tPCA whitening time: {:.2f} seconds'.format(end - start))
         # Check output dimensions
         self.assertEqual(x_white.shape, (self.NCOMP, self.NVOX))
         self.assertEqual(white.shape, (self.NCOMP, self.NSUB))
@@ -80,7 +80,7 @@ class test_ica_methods(unittest.TestCase):
         start = time.time()
         x_white, white, dewhite = ica.pca_whiten(self.noisy_data, self.NCOMP)
         end = time.time()
-        print('\ttime: {:.2f} seconds'.format(end - start))
+        #print('\ttime: {:.2f} seconds'.format(end - start))
         self.assertEqual(x_white.shape, (self.NCOMP, self.NVOX))
         self.assertEqual(white.shape, (self.NCOMP, self.NSUB))
         self.assertEqual(dewhite.shape, (self.NSUB, self.NCOMP))
@@ -103,7 +103,7 @@ class test_ica_methods(unittest.TestCase):
         start = time.time()
         A, S, _ = ica.ica1(self.clean_data, self.NCOMP)
         end = time.time()
-        print('\ttime: {}:.2f'.format(end - start))
+        #print('\ttime: {}:.2f'.format(end - start))
 
         # Check right dimensions of Output
         self.assertEqual(A.shape, (self.NSUB, self.NCOMP))

@@ -25,14 +25,14 @@ def main():
     start = time.time()
     A,S = model.fit(X)
     total = time.time() - start
-    print('total time: {}'.format(total))
+    #print('total time: {}'.format(total))
     # compare if our estimates are accurate
     # correlate A with Atrue and take 
     aCorr = np.abs(np.corrcoef(A.T,A_true.T)[:Ncomp,Ncomp:]).max(axis = 0).mean()
     sCorr = np.abs(np.corrcoef(S,S_true)[:Ncomp,Ncomp:]).max(axis = 0).mean()
 
-    print("Accuracy of estimated sources: %.2f"%sCorr)
-    print("Accuracy of estimated mixing: %.2f"%aCorr)
+    #print("Accuracy of estimated sources: %.2f"%sCorr)
+    #print("Accuracy of estimated mixing: %.2f"%aCorr)
 
 if __name__=="__main__":
 
