@@ -27,6 +27,7 @@ class ica_gpu(object):
     """
     Infomax ICA for one data modality
     """
+
     def __init__(self, n_comp=10, verbose=False):
 
         # Theano initialization
@@ -36,11 +37,12 @@ class ica_gpu(object):
         T_p_x_white = T.fmatrix()
         T_lrate = T.fscalar()
         T_block = T.fscalar()
-        T_unmixed = T.dot(self.T_weights,T_p_x_white) + T.addbroadcast(self.T_bias,1)
+        T_unmixed = T.dot(self.T_weights, T_p_x_white) + T.addbroadcast(self.T_bias, 1)
         T_logit = 1 - 2 / (1 + T.exp(-T_unmixed))
 
-        T_out =  self.T_weights +  T_lrate * T.dot(T_block * T.identity_like(self.T_weights) + T.dot(T_logit, T.transpose(T_unmixed)), self.T_weights)
-        T_bias_out = self.T_bias + T_lrate * T.reshape(T_logit.sum(axis=1), (-1,1))
+        T_out = self.T_weights + T_lrate * \
+            T.dot(T_block * T.identity_like(self.T_weights) + T.dot(T_logit, T.transpose(T_unmixed)), self.T_weights)
+        T_bias_out = self.T_bias + T_lrate * T.reshape(T_logit.sum(axis=1), (-1, 1))
         T_max_w = T.max(self.T_weights)
         T_isnan = T.any(T.isnan(self.T_weights))
 
@@ -51,9 +53,9 @@ class ica_gpu(object):
                                         allow_input_downcast=True)
 
         T_matrix = T.fmatrix()
-        T_cov = T.dot(T_matrix,T.transpose(T_matrix))/T_block
+        T_cov = T.dot(T_matrix, T.transpose(T_matrix))/T_block
         self.cov_fun = theano.function([T_matrix, T_block], T_cov, allow_input_downcast=True)
-        
+
         self.loading = None
         self.sources = None
         self.weights = None
@@ -71,15 +73,15 @@ class ica_gpu(object):
         dewhite : dewhitening matrix (X = np.dot(dewhite,Xwhite))
         """
         NSUB, NVOX = x2d.shape
-        x2d_demean = x2d - x2d.mean(axis=1).reshape((-1,1))
-        #cov = dot(x2d_demean, x2d_demean.T) / ( NVOX -1 )
+        x2d_demean = x2d - x2d.mean(axis=1).reshape((-1, 1))
+        # cov = dot(x2d_demean, x2d_demean.T) / ( NVOX -1 )
         cov = self.cov_fun(x2d_demean, NVOX-1)
-        w, v = eigh(cov,eigvals=(NSUB-self.n_comp,NSUB-1))
-        D = np.diag(1./(np.sqrt(w ) ))
-        white = dot(D,v.T)
-        D = np.diag( np.sqrt(w))
-        dewhite = dot(v,D)
-        x_white = dot(white,x2d_demean)
+        w, v = eigh(cov, eigvals=(NSUB-self.n_comp, NSUB-1))
+        D = np.diag(1./(np.sqrt(w)))
+        white = dot(D, v.T)
+        D = np.diag(np.sqrt(w))
+        dewhite = dot(v, D)
+        x_white = dot(white, x2d_demean)
         return (x_white, white, dewhite)
 
     def __w_update(self, x_white, lrate1):
@@ -110,28 +112,28 @@ class ica_gpu(object):
                 tt2 = NVOX
                 block1 = NVOX - start
 
-            max_w, isnan = self.w_up_fun(p_x_white[:,start:tt2], lrate1, block1)
-                
-                # Checking if W blows up
+            max_w, isnan = self.w_up_fun(p_x_white[:, start:tt2], lrate1, block1)
+
+            # Checking if W blows up
             if isnan or max_w > MAX_W:
-                #print("Numeric error! restarting with lower learning rate")
+                # print("Numeric error! restarting with lower learning rate")
                 lrate1 = lrate1 * ANNEAL
                 self.T_weights.set_value(np.eye(NCOMP, dtype=np.float32))
-                self.T_bias.set_value( np.zeros((NCOMP, 1), dtype=np.float32))
+                self.T_bias.set_value(np.zeros((NCOMP, 1), dtype=np.float32))
                 error = 1
 
                 if lrate1 > 1e-6 and \
                    matrix_rank(x_white) < NCOMP:
-                    #print("Data 1 is rank defficient"
-                          ". I cannot compute " +
-                          str(NCOMP) + " components.")
+                    # print("Data 1 is rank defficient"
+                      #    ". I cannot compute " +
+                      #    str(NCOMP) + " components.")
                     return (0, 1)
 
                 if lrate1 < 1e-6:
-                    #print("Weight matrix may"
-                          " not be invertible...")
+                    # print("Weight matrix may"
+                   #       " not be invertible...")
                     return (0, 1)
-        
+
         return(lrate1, error)
 
     def __infomax(self, x_white):
@@ -145,10 +147,10 @@ class ica_gpu(object):
         S : source matrix
         W : unmixing matrix
         """
-    
-        NCOMP = self.n_comp    
+
+        NCOMP = self.n_comp
         # Initialization
-        self.T_weights.set_value( np.eye(NCOMP, dtype=np.float32))
+        self.T_weights.set_value(np.eye(NCOMP, dtype=np.float32))
         weights = np.eye(NCOMP)
         old_weights = np.eye(NCOMP)
         d_weigths = np.zeros(NCOMP)
@@ -158,19 +160,18 @@ class ica_gpu(object):
         change = 1
         angle_delta = 0
         step = 1
-        if self.verbose:
-            #print("Beginning ICA training...")
-        
-            
+        # if self.verbose:
+        # print("Beginning ICA training...")
+
         while step < MAX_STEP and change > W_STOP:
 
-            (lrate, error) = self.__w_update( x_white, lrate)
-            
+            (lrate, error) = self.__w_update(x_white, lrate)
+
             if error != 0:
                 step = 1
                 error = 0
                 lrate = lrate * ANNEAL
-                self.T_weights.set_value( np.eye(NCOMP, dtype=np.float32))
+                self.T_weights.set_value(np.eye(NCOMP, dtype=np.float32))
                 old_weights = np.eye(NCOMP)
                 d_weigths = np.zeros(NCOMP)
                 old_d_weights = np.zeros(NCOMP)
@@ -194,12 +195,12 @@ class ica_gpu(object):
                 elif step == 1:
                     old_d_weights = np.copy(d_weigths)
 
-                if (self.verbose and step % 10 == 0) or\
-                (self.verbose and change < W_STOP):
-                    #print("Step %d: Lrate %.1e,"
-                          "Wchange %.1e,"
-                          "Angle %.2f" % (step, lrate,
-                                          change, angle_delta))
+                # if (self.verbose and step % 10 == 0) or
+                # (self.verbose and change < W_STOP):
+                    # print("Step %d: Lrate %.1e,"
+                 #         "Wchange %.1e,"
+                 #         "Angle %.2f" % (step, lrate,
+                 #                         change, angle_delta))
 
             step = step + 1
 
@@ -210,25 +211,15 @@ class ica_gpu(object):
         '''
         Single modality Independent Component Analysis
         '''
-        if self.verbose:
-            #print("Whitening data...")
+        # if self.verbose:
+        # print("Whitening data...")
         x_white, _, dewhite = self.__pca_whiten(x_raw)
-        if self.verbose:
-            #print("Done.")
-            #print("Running INFOMAX-ICA ...")
+        # if self.verbose:
+        # print("Done.")
+        # print("Running INFOMAX-ICA ...")
         loading, self.sources, self.weights = self.__infomax(x_white)
 
         self.loading = dot(dewhite, loading)
-        if self.verbose:
-            #print("Done.")
+        # if self.verbose:
+        # print("Done.")
         return (self.loading, self.sources)
-
-
-
-
-
-
-
-
-
-
